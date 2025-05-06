@@ -1,0 +1,58 @@
+{
+  "name": "jaeger-mcp-server",
+  "version": "0.0.0",
+  "description": "MCP Server for Jaeger",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "bin": {
+    "jaeger-mcp-server": "./dist/index.js"
+  },
+  "author": "Serkan Ozal <serkanozal86@gmail.com> (https://github.com/serkan-ozal)",
+  "homepage": "https://github.com/serkan-ozal/jaeger-mcp-server",
+  "repository": "serkan-ozal/jaeger-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "mcp-server",
+    "jaeger",
+    "ai",
+    "llm",
+    "tracing",
+    "monitoring",
+    "open-telemetry"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node ./src/index.ts",
+    "watch": "tsc --watch",
+    "inspector": "npm run build && node -e \"require('fs').chmodSync('dist/index.js', '755')\" && npx @modelcontextprotocol/inspector dist/index.js --debug",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:check": "prettier --config .prettierrc.json --check ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "lint:format": "prettier --config .prettierrc.json --write ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
+    "release:patch": "release-it --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks",
+    "release:minor": "release-it minor --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks",
+    "release:major": "release-it major --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks"
+  },
+  "files": [
+    "dist/",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@types/node": "^18.19.87",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.26.0",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.5.3",
+    "release-it": "^19.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "axios": "^1.9.0",
+    "chalk": "^4.1.2"
+  }
+}
