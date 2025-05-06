@@ -1,6 +1,6 @@
 {
   "name": "jaeger-mcp-server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "MCP Server for Jaeger",
   "type": "commonjs",
   "main": "./dist/index.js",
