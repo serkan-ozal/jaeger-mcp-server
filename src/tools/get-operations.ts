@@ -1,7 +1,9 @@
-import { z } from 'zod';
-
-import { Tool } from './types';
 import { JaegerClient } from '../client';
+import { GetOperationsResponse, toSpanKind } from '../domain';
+import { Tool } from './types';
+
+import { z } from 'zod';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 
 export class GetOperations implements Tool {
     name(): string {
@@ -18,7 +20,14 @@ export class GetOperations implements Tool {
                 .string()
                 .describe('Filters operations by service name (Required)'),
             spanKind: z
-                .enum(['server', 'client', 'producer', 'consumer', 'internal'])
+                .enum([
+                    '',
+                    'server',
+                    'client',
+                    'producer',
+                    'consumer',
+                    'internal',
+                ])
                 .describe(
                     'Filters operations by OpenTelemetry span kind ("server", "client", "producer", "consumer", "internal") (Optional)'
                 )
@@ -27,13 +36,15 @@ export class GetOperations implements Tool {
     }
 
     async handle(
+        server: Server,
         jaegerClient: JaegerClient,
         { service, spanKind }: any
     ): Promise<string> {
-        const response: any = await jaegerClient.get('/api/v3/operations', {
-            service,
-            span_kind: spanKind,
-        });
+        const response: GetOperationsResponse =
+            await jaegerClient.getOperations({
+                service,
+                spanKind: toSpanKind(spanKind),
+            });
         return JSON.stringify(response.operations);
     }
 }

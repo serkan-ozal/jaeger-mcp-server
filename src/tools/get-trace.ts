@@ -1,7 +1,9 @@
-import { z } from 'zod';
-
-import { Tool } from './types';
 import { JaegerClient } from '../client';
+import { GetTraceResponse } from '../domain';
+import { Tool } from './types';
+
+import { z } from 'zod';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 
 export class GetTrace implements Tool {
     name(): string {
@@ -41,13 +43,15 @@ export class GetTrace implements Tool {
     }
 
     async handle(
+        server: Server,
         jaegerClient: JaegerClient,
         { traceId, startTime, endTime }: any
     ): Promise<string> {
-        const response: any = await jaegerClient.get(
-            `/api/v3/traces/${traceId}`,
-            { startTime, endTime }
-        );
-        return JSON.stringify(response.result.resourceSpans);
+        const response: GetTraceResponse = await jaegerClient.getTrace({
+            traceId,
+            startTime: startTime ? Date.parse(startTime) : undefined,
+            endTime: endTime ? Date.parse(endTime) : undefined,
+        });
+        return JSON.stringify(response.resourceSpans || {});
     }
 }
