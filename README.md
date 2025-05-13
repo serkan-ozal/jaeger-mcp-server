@@ -38,7 +38,7 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
       "command": "npx",
       "args": ["-y", "jaeger-mcp-server"],
       "env": {
-        "JAEGER_URL": "<YOUR_JAEGER_HTTP_URL>"
+        "JAEGER_URL": "<YOUR_JAEGER_HTTP_OR_GRPC_API_URL>"
       }
     }
   }
@@ -50,9 +50,10 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
 
 ### Environment Variables
 
-- `JAEGER_URL`: HTTP URL of the Jaeger instance to access.
+- `JAEGER_URL`: HTTP API (`HTTP JSON` (`/api/v3/*`)) or the gRPC API (`gRPC/Protobuf` (`jaeger.api_v3.QueryService`)) URL of the Jaeger instance to access.
+- `JAEGER_PORT`: HTTP or gRPC API port of the Jaeger instance to access. The default value is `16685` for the gRPC API and `16686` for the HTTP API.
 - `JAEGER_AUTHORIZATION_HEADER`: `Authorization` HTTP header to be added into the requests for querying traces over Jaeger API (for ex. `Basic <Basic Auth Header>`)
-
+- `JAEGER_PROTOCOL`: API protocol of the Jaeger instance to access. Valid values are `GRPC` and `HTTP`. The default value is `GRPC`. Valid
 
 ## Components
 
@@ -83,7 +84,7 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
         - `Mandatory`: `false`
         - `Type`: `string`
         - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-- `get-traces`: Searches the spans as JSON array of object in the OpenTelemetry resource spans format.
+- `find-traces`: Searches the spans as JSON array of object in the OpenTelemetry resource spans format.
     - `serviceName`:
         - `Mandatory`: `true`
         - `Type`: `string`
@@ -92,26 +93,48 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
         - `Mandatory`: `false`
         - `Type`: `string`
         - `Description`: The start time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-    - `startTimeMin`:
-        - `Mandatory`: `true`
-        - `Type`: `string`
-        - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-    - `startTimeMax`:
-        - `Mandatory`: `true`
-        - `Type`: `string`
-        - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-    - `durationMin`:
+    - `attributes`:
         - `Mandatory`: `false`
-        - `Type`: `string`
-        - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-    - `durationMax`:
-        - `Mandatory`: `false`
-        - `Type`: `string`
-        - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
-    - `searchDepth`:
-        - `Mandatory`: `false`
-        - `Type`: `number`
-        - `Description`: The end time to filter spans in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`)
+        - `Type`: `map<string, string | number | boolean>`
+        - `Description`: Filters spans by span attributes. Attributes can be passed in key/value format in JSON where 
+                         keys can be string and values can be string, number (integer or double) or boolean.
+                         For example
+
+                         ```json
+                         {
+                             "stringAttribute": "str",
+                             "integerAttribute": 123,
+                             "doubleAttribute: 123.456,
+                             "booleanAttribute": true,
+                         }
+                         ```
+   - `startTimeMin`:
+       - `Mandatory`: `true`
+       - `Type`: `string`
+       - `Description`: Start of the time interval (inclusive) in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`) for the query. 
+                        Only traces with spans that started on or after this time will be returned.
+   - `startTimeMax`:
+       - `Mandatory`: `true`
+       - `Type`: `string`
+       - `Description`: End of the time interval (exclusive) in the RFC 3339, section 5.6 format, (e.g., `2017-07-21T17:32:28Z`) for the query. 
+                        Only traces with spans that started before this time will be returned.
+   - `durationMin`:
+       - `Mandatory`: `false`
+       - `Type`: `string`
+       - `Description`: Minimum duration of a span in **milliseconds** in the trace.
+                        Only traces with spans that lasted at least this long will be returned.
+   - `durationMax`:
+       - `Mandatory`: `false`
+       - `Type`: `string`
+       - `Description`: Maximum duration of a span in **milliseconds** in the trace.
+                        Only traces with spans that lasted at most this long will be returned.
+   - `searchDepth`:
+       - `Mandatory`: `false`
+       - `Type`: `number`
+       - `Description`: Defines the maximum search depth.
+                        Depending on the backend storage implementation, this may behave like an SQL `LIMIT` clause.
+                        However, some implementations might not support precise limits
+                        and a larger value generally results in more traces being returned.
 
 ### Resources
 
@@ -120,7 +143,7 @@ N/A
 
 ## Roadmap
 
-- Migrate to the Jaeger's `gRPC/Protobuf` (Stable) API from `HTTP JSON` (internal) API for better search capabilities.
+- Support `HTTP Stream` transport protocol (`SSE` transport protocol is deprecated in favor of it) to be able to use the MCP server from remote.
 - Support more tools which are not directly available over Jaeger API (orchestrating and pipelining multiple API endpoints)
 
 

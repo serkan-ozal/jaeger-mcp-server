@@ -2,13 +2,13 @@ import { Tool, ToolInput, ToolOutput, ToolParamsSchema } from './types';
 import { GetOperations } from './get-operations';
 import { GetServices } from './get-services';
 import { GetTrace } from './get-trace';
-import { GetTraces } from './get-traces';
+import { FindTraces } from './find-traces';
 
 export const tools: Tool[] = [
     new GetOperations(),
     new GetServices(),
     new GetTrace(),
-    new GetTraces(),
+    new FindTraces(),
 ];
 
 export { Tool, ToolInput, ToolOutput, ToolParamsSchema };

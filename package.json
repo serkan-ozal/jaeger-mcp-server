@@ -21,10 +21,12 @@
     "open-telemetry"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "npm run protos && tsc",
+    "protos": " npm run protos:generate",
+    "protos:generate": "node ./scripts/generate-protos.js",
     "start": "ts-node ./src/index.ts",
     "watch": "tsc --watch",
-    "inspector": "npm run build && node -e \"require('fs').chmodSync('dist/index.js', '755')\" && npx @modelcontextprotocol/inspector dist/index.js --debug",
+    "inspector": "npm run build && chmod 755 './dist/index.js' && npx @modelcontextprotocol/inspector dist/index.js --debug",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:check": "prettier --config .prettierrc.json --check ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
     "lint:format": "prettier --config .prettierrc.json --write ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts",
@@ -46,13 +48,16 @@
     "eslint": "^9.26.0",
     "eslint-plugin-import": "^2.31.0",
     "prettier": "^3.5.3",
+    "protobufjs-cli": "1.1.3",
     "release-it": "^17.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.3",
     "@modelcontextprotocol/sdk": "^1.11.0",
     "axios": "^1.9.0",
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "protobufjs": "^7.3.0"
   }
 }
