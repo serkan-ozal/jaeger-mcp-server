@@ -100,14 +100,14 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
                          keys can be string and values can be string, number (integer or double) or boolean.
                          For example
 
-                         ```json
-                         {
-                             "stringAttribute": "str",
-                             "integerAttribute": 123,
-                             "doubleAttribute: 123.456,
-                             "booleanAttribute": true,
-                         }
-                         ```
+            ```json
+            {
+                "stringAttribute": "str",
+                "integerAttribute": 123,
+                "doubleAttribute": 123.456,
+                "booleanAttribute": true,
+            }
+            ```
    - `startTimeMin`:
        - `Mandatory`: `true`
        - `Type`: `string`
