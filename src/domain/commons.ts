@@ -86,3 +86,9 @@ export type ResourceSpans = {
     scopeSpans: ScopeSpans[];
     schemaUrl?: string;
 };
+
+export type ServiceGraphEdge = {
+    parent: string;
+    child: string;
+    callCount: number;
+};

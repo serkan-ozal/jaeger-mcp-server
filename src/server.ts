@@ -1,6 +1,6 @@
 import { createClient, JaegerClient } from './client';
 import * as logger from './logger';
-import { tools, Tool, ToolInput } from './tools/';
+import { Tool, ToolInput, getTools } from './tools/';
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -21,6 +21,7 @@ function _createJaegerClient(): JaegerClient {
             ? parseInt(process.env.JAEGER_PORT)
             : undefined,
         authorizationHeader: process.env.JAEGER_AUTHORIZATION_HEADER,
+        allowDefaultPort: process.env.JAEGER_USE_DEFAULT_PORT !== 'false'
     });
 }
 
@@ -64,7 +65,8 @@ export async function startServer(): Promise<void> {
         };
     };
 
-    tools.forEach((t: Tool) => {
+    const isGRPC = !process.env.JAEGER_PROTOCOL || process.env.JAEGER_PROTOCOL.toUpperCase() === 'GRPC';
+    getTools(isGRPC).forEach((t: Tool) => {
         logger.info(`Registering tool ${t.name} ...`);
         server.tool(
             t.name(),
