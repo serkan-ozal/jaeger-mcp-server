@@ -1,4 +1,4 @@
-import { ResourceSpans, SpanKind } from './commons';
+import { ResourceSpans, ServiceGraphEdge, SpanKind } from './commons';
 
 export type Operation = {
     name: string;
@@ -19,4 +19,8 @@ export type GetTraceResponse = {
 
 export type FindTracesResponse = {
     resourceSpans: ResourceSpans[];
+};
+
+export type GetServiceGraphResponse = {
+    graphEdges: ServiceGraphEdge[];
 };

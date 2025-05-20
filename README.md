@@ -54,6 +54,8 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
 - `JAEGER_PORT`: HTTP or gRPC API port of the Jaeger instance to access. The default value is `16685` for the gRPC API and `16686` for the HTTP API.
 - `JAEGER_AUTHORIZATION_HEADER`: `Authorization` HTTP header to be added into the requests for querying traces over Jaeger API (for ex. `Basic <Basic Auth Header>`)
 - `JAEGER_PROTOCOL`: API protocol of the Jaeger instance to access. Valid values are `GRPC` and `HTTP`. The default value is `GRPC`. Valid
+- `JAEGER_USE_DEFAULT_PORT`: If `false`, the Jaeger HTTP client won't attempt to use a port when `JAEGER_PORT` is not set. Default is `true`. 
+- `LOG_LEVEL`: Sets the log level from one of [`debug`, `info`, `warn`, `error`, `none`]. Default is `none`.
 
 ## Components
 
@@ -105,7 +107,7 @@ like VS Code, Claude, Cursor, Windsurf Github Copilot via the `jaeger-mcp-server
                 "stringAttribute": "str",
                 "integerAttribute": 123,
                 "doubleAttribute": 123.456,
-                "booleanAttribute": true,
+                "booleanAttribute": true
             }
             ```
    - `startTimeMin`:

@@ -29,3 +29,8 @@ export type TraceQueryParameters = {
 export type FindTracesRequest = {
     query: TraceQueryParameters;
 };
+
+export type GetServiceGraphRequest = {
+    endTS: number;
+    lookback: number;
+};

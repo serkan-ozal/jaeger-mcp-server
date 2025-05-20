@@ -5,6 +5,8 @@ import {
     FindTracesResponse,
     GetOperationsRequest,
     GetOperationsResponse,
+    GetServiceGraphRequest,
+    GetServiceGraphResponse,
     GetServicesRequest,
     GetServicesResponse,
     GetTraceRequest,
@@ -390,5 +392,9 @@ export class JaegerGrpcClient implements JaegerClient {
         } catch (err: any) {
             return this._handleError(err);
         }
+    }
+
+    async getServiceGraph(request: GetServiceGraphRequest): Promise<GetServiceGraphResponse> {
+        return this._handleError('getServiceGraph not supported by gRPC');
     }
 }

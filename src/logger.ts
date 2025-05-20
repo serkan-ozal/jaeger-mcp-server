@@ -4,9 +4,33 @@ const BANNER_TEXT = '[JAEGER-MCP-SERVER]';
 const BANNER_BG_COLOR = '#628816';
 const BANNER_TEXT_COLOR = '#5ECAE0';
 
-const DISABLED = true;
+export enum LogLevel {
+  DEBUG = 0,
+  INFO = 1,
+  WARN = 2,
+  ERROR = 3,
+  NONE = 4
+}
 
-let debugEnabled = false;
+export function parseLogLevel(levelStr?: string): LogLevel {
+  if (!levelStr) {
+      return LogLevel.NONE;
+  }
+  
+  const normalized = levelStr.toLowerCase().trim();
+  
+  switch (normalized) {
+    case 'debug': return LogLevel.DEBUG;
+    case 'info': return LogLevel.INFO;
+    case 'warn': return LogLevel.WARN;
+    case 'error': return LogLevel.ERROR;
+    case 'none':
+    default: return LogLevel.NONE;
+  }
+}
+
+// Initialize log level from environment
+let currentLogLevel = parseLogLevel(process.env.LOG_LEVEL);
 
 function _timeAsString(): string {
     const date: Date = new Date();
@@ -20,7 +44,7 @@ function _timeAsString(): string {
 }
 
 function _normalizeArgs(...args: any[]): any[] {
-    if (isDebugEnabled()) {
+    if (currentLogLevel === LogLevel.DEBUG) {
         return args;
     } else {
         return (args || []).map((arg) => {
@@ -39,34 +63,34 @@ function _normalizeArgs(...args: any[]): any[] {
     }
 }
 
-export function isDebugEnabled(): boolean {
-    return debugEnabled;
+export function getLogLevel(): LogLevel {
+    return currentLogLevel;
 }
 
-export function setDebugEnabled(enabled: boolean): void {
-    debugEnabled = enabled;
+export function setLogLevel(level: LogLevel): void {
+    currentLogLevel = level;
 }
 
 export function debug(...args: any[]): void {
-    if (DISABLED) {
+    if (currentLogLevel > LogLevel.DEBUG) {
         return;
     }
-    if (isDebugEnabled()) {
-        console.debug(
-            chalk.bgHex(BANNER_BG_COLOR).hex(BANNER_TEXT_COLOR)(BANNER_TEXT),
-            _timeAsString(),
-            '|',
-            chalk.blue('DEBUG'),
-            '-',
-            ..._normalizeArgs(...args)
-        );
-    }
+    
+    console.debug(
+        chalk.bgHex(BANNER_BG_COLOR).hex(BANNER_TEXT_COLOR)(BANNER_TEXT),
+        _timeAsString(),
+        '|',
+        chalk.blue('DEBUG'),
+        '-',
+        ..._normalizeArgs(...args)
+    );
 }
 
 export function info(...args: any[]): void {
-    if (DISABLED) {
+    if (currentLogLevel > LogLevel.INFO) {
         return;
     }
+    
     console.info(
         chalk.bgHex(BANNER_BG_COLOR).hex(BANNER_TEXT_COLOR)(BANNER_TEXT),
         _timeAsString(),
@@ -78,9 +102,10 @@ export function info(...args: any[]): void {
 }
 
 export function warn(...args: any[]): void {
-    if (DISABLED) {
+    if (currentLogLevel > LogLevel.WARN) {
         return;
     }
+    
     console.warn(
         chalk.bgHex(BANNER_BG_COLOR).hex(BANNER_TEXT_COLOR)(BANNER_TEXT),
         _timeAsString(),
@@ -92,9 +117,10 @@ export function warn(...args: any[]): void {
 }
 
 export function error(...args: any[]): void {
-    if (DISABLED) {
+    if (currentLogLevel > LogLevel.ERROR) {
         return;
     }
+    
     console.error(
         chalk.bgHex(BANNER_BG_COLOR).hex(BANNER_TEXT_COLOR)(BANNER_TEXT),
         _timeAsString(),

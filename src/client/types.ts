@@ -3,6 +3,8 @@ import {
     FindTracesResponse,
     GetOperationsRequest,
     GetOperationsResponse,
+    GetServiceGraphRequest,
+    GetServiceGraphResponse,
     GetServicesRequest,
     GetServicesResponse,
     GetTraceRequest,
@@ -13,6 +15,7 @@ export type ClientConfigurations = {
     url: string;
     port?: number;
     authorizationHeader?: string;
+    allowDefaultPort?: boolean;
 };
 
 export interface JaegerClient {
@@ -22,4 +25,5 @@ export interface JaegerClient {
     ): Promise<GetOperationsResponse>;
     getTrace(request: GetTraceRequest): Promise<GetTraceResponse>;
     findTraces(request: FindTracesRequest): Promise<FindTracesResponse>;
+    getServiceGraph(request: GetServiceGraphRequest): Promise<GetServiceGraphResponse>
 }
